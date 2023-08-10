@@ -21,7 +21,7 @@
 
 #  ifdef LARGE_DATASET /* Default if unspecified. */
 #   define TSTEPS 200
-#   define N 32000
+#   define N 24000
 #  endif
 
 # endif /* !N */

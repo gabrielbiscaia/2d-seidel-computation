@@ -3,9 +3,14 @@
 #include <string.h>
 #include <math.h>
 
+#include <pthread.h>
+
 #include <polybench.h>
 #include "seidel-2d.h"
 
+
+int num_threads;
+pthread_barrier_t barrier;
 
 /* Array initialization. */
 static
@@ -130,12 +135,12 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-    const int num_threads = 2; // Defina o número de threads
+    num_threads = 2; // Defina o número de threads
 
     // Inicialização e configuração das variáveis
     pthread_t threads[num_threads];
     int thread_ids[num_threads];
-    pthread_barrier_t barrier;
+    
 
     // Inicialização da barreira
     pthread_barrier_init(&barrier, NULL, num_threads);
@@ -162,10 +167,10 @@ int main(int argc, char** argv)
 
   /* Prevent dead-code elimination. All live-out data must be printed
      by the function call in argument. */
-  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
+  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(MATRIX)));
 
   /* Be clean. */
-  POLYBENCH_FREE_ARRAY(A);
+  POLYBENCH_FREE_ARRAY(MATRIX);
 
   return 0;
 }
