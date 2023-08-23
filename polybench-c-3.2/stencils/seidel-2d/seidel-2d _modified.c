@@ -2,17 +2,20 @@
 #include <unistd.h>
 #include <string.h>
 #include <math.h>
-
-#include <pthread.h>
-
 #include <polybench.h>
+#include <pthread.h>
 #include "seidel-2d.h"
 
+#define NUM_THREADS 2
 
-int num_threads;
 pthread_barrier_t barrier;
 
-/* Array initialization. */
+pthread_t threads[NUM_THREADS];
+
+DATA_TYPE POLYBENCH_2D_ARRAY_DECL(MATRIX, DATA_TYPE, N, N, N, N);
+DATA_TYPE POLYBENCH_2D_ARRAY_DECL(MATRIX_AUX, DATA_TYPE, N, N, N, N);
+
+
 static
 void init_array (int n,
 		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n))
@@ -43,13 +46,11 @@ void copy_array_line (int start, int end,
   int i, j;
 //VERIFICAR
   for (i = start; i < end; i++)
-    for (j = 0; j < n; j++)
+    for (j = 0; j < N; j++)
       B[i][j]=A[i][j];
 }
 
 
-/* DCE code. Must scan the entire live-out data.
-   Can be used also to check the correctness of the output. */
 static
 void print_array(int n,
 		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n))
@@ -66,34 +67,14 @@ void print_array(int n,
 }
 
 
-/* Main computational kernel. The whole function will be timed,
-   including the call and return. */
 static
-void kernel_seidel_2d(int tsteps,
-		      int n,
-		      DATA_TYPE POLYBENCH_2D(A,N,N,n,n))
-{
-  int t, i, j;
-
-#pragma scop
-  for (t = 0; t <= _PB_TSTEPS - 1; t++)
-    for (i = 1; i<= _PB_N - 2; i++)
-      for (j = 1; j <= _PB_N - 2; j++)
-	A[i][j] = (A[i-1][j-1] + A[i-1][j] + A[i-1][j+1]
-		   + A[i][j-1] + A[i][j] + A[i][j+1]
-		   + A[i+1][j-1] + A[i+1][j] + A[i+1][j+1])/9.0;
-#pragma endscop
-
-}
-
-static
-void kernel_seidel_2d_parallel(int tsteps,
+void kernel_seidel_2d_parallel(void *arg, int tsteps,
 		      int n,
 		      DATA_TYPE POLYBENCH_2D(A,N,N,n,n), DATA_TYPE POLYBENCH_2D(B,N,N,n,n))
 {
     int id = *(int *)arg;
-    int start_i = (id*(N-2)/num_threads)+1;
-    int end_i = (id+1)*(N-2)/num_threads;
+    int start_i = (id*(N-2)/NUM_THREADS)+1;
+    int end_i = (id+1)*(N-2)/NUM_THREADS;
 
     for (int t = 0; t <= TSTEPS - 1; t++) {
         for (int i = start_i; i <= end_i; i++) {
@@ -120,9 +101,8 @@ int main(int argc, char** argv)
   int tsteps = TSTEPS;
 
   /* Variable declaration/allocation. */
-  POLYBENCH_2D_ARRAY_DECL(MATRIX, DATA_TYPE, N, N, n, n);
-
-  POLYBENCH_2D_ARRAY_DECL(MATRIX_AUX, DATA_TYPE, N, N, n, n);
+  POLYBENCH_2D_ARRAY_ALLOC(MATRIX, DATA_TYPE, N, N, n, n);
+  POLYBENCH_2D_ARRAY_ALLOC(MATRIX_AUX, DATA_TYPE, N, N, n, n);
 
   /* Initialize array(s). */
   init_array (n, POLYBENCH_ARRAY(MATRIX));
@@ -134,30 +114,26 @@ int main(int argc, char** argv)
   /* Start timer. */
   polybench_start_instruments;
 
-  /* Run kernel. */
-    num_threads = 2; // Defina o número de threads
 
-    // Inicialização e configuração das variáveis
-    pthread_t threads[num_threads];
-    int thread_ids[num_threads];
+  int thread_ids[NUM_THREADS];
     
 
-    // Inicialização da barreira
-    pthread_barrier_init(&barrier, NULL, num_threads);
+  // Inicialização da barreira
+  pthread_barrier_init(&barrier, NULL, NUM_THREADS);
 
-    // Criação das threads
-    for (int i = 0; i < num_threads; i++) {
-        thread_ids[i] = i;
-        pthread_create(&threads[i], NULL, kernel_seidel_2d_parallel, &thread_ids[i]);
-    }
+  // Criação das threads
+  for (int i = 0; i < NUM_THREADS; i++) {
+      thread_ids[i] = i;
+      pthread_create(&threads[i], NULL, kernel_seidel_2d_parallel, &thread_ids[i]);
+  }
 
-    // Aguarda a conclusão das threads
-    for (int i = 0; i < num_threads; i++) {
-        pthread_join(threads[i], NULL);
-    }
+  // Aguarda a conclusão das threads
+  for (int i = 0; i < NUM_THREADS; i++) {
+      pthread_join(threads[i], NULL);
+  }
 
-    // Libera a memória da barreira
-    pthread_barrier_destroy(&barrier);
+  // Libera a memória da barreira
+  pthread_barrier_destroy(&barrier);
 
   //kernel_seidel_2d (tsteps, n, POLYBENCH_ARRAY(A));
 

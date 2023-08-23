@@ -16,7 +16,7 @@
 
 #  ifdef STANDARD_DATASET
 #   define TSTEPS 200
-#   define N 16000
+#   define N 100
 #  endif
 
 #  ifdef LARGE_DATASET /* Default if unspecified. */
