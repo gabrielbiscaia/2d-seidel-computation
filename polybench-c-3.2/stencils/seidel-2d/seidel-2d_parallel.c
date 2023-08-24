@@ -6,7 +6,7 @@
 #include <pthread.h>
 #include "seidel-2d.h"
 
-#define NUM_THREADS 2
+#define NUM_THREADS 4
 
 int size;
 int tsteps;
@@ -64,9 +64,7 @@ void print_array(int n, DATA_TYPE **A)
   fprintf(stderr, "\n");
 }
 
-
-static
-void kernel_seidel_2d_parallel(void *arg)
+void *kernel_seidel_2d_parallel(void *arg)
 {
     int id = *(int *)arg;
     int start_i = (id*(N-2)/NUM_THREADS)+1;
@@ -77,15 +75,13 @@ void kernel_seidel_2d_parallel(void *arg)
             for (int j = 1; j <= N - 2; j++) {
                 MATRIX_AUX[i][j] = (MATRIX[i-1][j-1] + MATRIX[i-1][j] + MATRIX[i-1][j+1]
                        + MATRIX[i][j-1] + MATRIX[i][j] + MATRIX[i][j+1]
-                       + MATRIX[i+1][j-1] + MATRIX[i+1][j] + MATRIX[i+1][j+1])/SCALAR_VAL(9.0);
+                       + MATRIX[i+1][j-1] + MATRIX[i+1][j] + MATRIX[i+1][j+1])/9;
             }
         }
         copy_array_line(start_i, end_i, MATRIX, MATRIX_AUX);
         // Sync Threads
         pthread_barrier_wait(&barrier);
     }
-
-    return NULL;
 
 }
 
@@ -100,6 +96,16 @@ void aloc_matrix()
   for(int i=0; i<size; i++){
     MATRIX_AUX[i] = (DATA_TYPE *)malloc(sizeof(DATA_TYPE)*size);
   }
+}
+
+void liberarMatrizes(){
+  for(int i=0; i<size; i++){
+    free(MATRIX[i]);
+    free(MATRIX_AUX[i]);
+  }
+
+  free(MATRIX);
+  free(MATRIX_AUX);
 }
 
 int main(int argc, char** argv)
@@ -140,6 +146,8 @@ int main(int argc, char** argv)
 
   // Libera a memória da barreira
   pthread_barrier_destroy(&barrier);
+
+  liberarMatrizes();
 
   //kernel_seidel_2d (tsteps, n, POLYBENCH_ARRAY(A));
 

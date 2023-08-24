@@ -10,18 +10,18 @@
 # if !defined(TSTEPS) && ! defined(N)
 /* Define the possible dataset sizes. */
 #  ifdef SMALL_DATASET
-#   define TSTEPS 200
-#   define N 8000
+#   define TSTEPS 400
+#   define N 4000
 #  endif
 
 #  ifdef STANDARD_DATASET
-#   define TSTEPS 200
-#   define N 100
+#   define TSTEPS 400
+#   define N 6000
 #  endif
 
 #  ifdef LARGE_DATASET /* Default if unspecified. */
-#   define TSTEPS 200
-#   define N 24000
+#   define TSTEPS 400
+#   define N 8000
 #  endif
 
 # endif /* !N */
