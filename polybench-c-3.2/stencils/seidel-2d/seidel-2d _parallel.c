@@ -8,40 +8,40 @@
 
 #define NUM_THREADS 2
 
+int size;
+int tsteps;
+
 pthread_barrier_t barrier;
 
 pthread_t threads[NUM_THREADS];
 
-DATA_TYPE POLYBENCH_2D_ARRAY_DECL(MATRIX, DATA_TYPE, N, N, N, N);
-DATA_TYPE POLYBENCH_2D_ARRAY_DECL(MATRIX_AUX, DATA_TYPE, N, N, N, N);
+DATA_TYPE **MATRIX;
+DATA_TYPE **MATRIX_AUX;
 
 
 static
-void init_array (int n,
-		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n))
+void init_array (DATA_TYPE **A)
 {
   int i, j;
 
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++)
-      A[i][j] = ((DATA_TYPE) i*(j+2) + 2) / n;
+  for (i = 0; i < size; i++)
+    for (j = 0; j < size; j++)
+      A[i][j] = ((DATA_TYPE) i*(j+2) + 2) / size;
 }
 
 /* Matrix Copying */
 static
-void copy_array (int n,
-		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n), DATA_TYPE POLYBENCH_2D(B,N,N,n,n))
+void copy_array (DATA_TYPE **A, DATA_TYPE **B)
 {
   int i, j;
 
-  for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++)
+  for (i = 0; i < size; i++)
+    for (j = 0; j < size; j++)
       B[i][j]=A[i][j];
 }
 
 static
-void copy_array_line (int start, int end,
-		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n), DATA_TYPE POLYBENCH_2D(B,N,N,n,n))
+void copy_array_line (int start, int end, DATA_TYPE **A, DATA_TYPE **B)
 {
   int i, j;
 //VERIFICAR
@@ -52,9 +52,7 @@ void copy_array_line (int start, int end,
 
 
 static
-void print_array(int n,
-		 DATA_TYPE POLYBENCH_2D(A,N,N,n,n))
-
+void print_array(int n, DATA_TYPE **A)
 {
   int i, j;
 
@@ -68,9 +66,7 @@ void print_array(int n,
 
 
 static
-void kernel_seidel_2d_parallel(void *arg, int tsteps,
-		      int n,
-		      DATA_TYPE POLYBENCH_2D(A,N,N,n,n), DATA_TYPE POLYBENCH_2D(B,N,N,n,n))
+void kernel_seidel_2d_parallel(void *arg)
 {
     int id = *(int *)arg;
     int start_i = (id*(N-2)/NUM_THREADS)+1;
@@ -79,12 +75,12 @@ void kernel_seidel_2d_parallel(void *arg, int tsteps,
     for (int t = 0; t <= TSTEPS - 1; t++) {
         for (int i = start_i; i <= end_i; i++) {
             for (int j = 1; j <= N - 2; j++) {
-                B[i][j] = (A[i-1][j-1] + A[i-1][j] + A[i-1][j+1]
-                       + A[i][j-1] + A[i][j] + A[i][j+1]
-                       + A[i+1][j-1] + A[i+1][j] + A[i+1][j+1])/SCALAR_VAL(9.0);
+                MATRIX_AUX[i][j] = (MATRIX[i-1][j-1] + MATRIX[i-1][j] + MATRIX[i-1][j+1]
+                       + MATRIX[i][j-1] + MATRIX[i][j] + MATRIX[i][j+1]
+                       + MATRIX[i+1][j-1] + MATRIX[i+1][j] + MATRIX[i+1][j+1])/SCALAR_VAL(9.0);
             }
         }
-        copy_array_line(start_i, end_i, POLYBENCH_ARRAY(A),POLYBENCH_ARRAY(B));
+        copy_array_line(start_i, end_i, MATRIX, MATRIX_AUX);
         // Sync Threads
         pthread_barrier_wait(&barrier);
     }
@@ -93,22 +89,32 @@ void kernel_seidel_2d_parallel(void *arg, int tsteps,
 
 }
 
+void aloc_matrix()
+{
+  MATRIX = (DATA_TYPE **)malloc(sizeof(DATA_TYPE)*size);
+  for(int i=0; i<size; i++){
+    MATRIX[i] = (DATA_TYPE *)malloc(sizeof(DATA_TYPE)*size);
+  }
+
+  MATRIX_AUX = (DATA_TYPE **)malloc(sizeof(DATA_TYPE)*size);
+  for(int i=0; i<size; i++){
+    MATRIX_AUX[i] = (DATA_TYPE *)malloc(sizeof(DATA_TYPE)*size);
+  }
+}
 
 int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
-  int n = N;
-  int tsteps = TSTEPS;
+  size = N;
+  tsteps = TSTEPS;
 
-  /* Variable declaration/allocation. */
-  POLYBENCH_2D_ARRAY_ALLOC(MATRIX, DATA_TYPE, N, N, n, n);
-  POLYBENCH_2D_ARRAY_ALLOC(MATRIX_AUX, DATA_TYPE, N, N, n, n);
+  aloc_matrix();
 
   /* Initialize array(s). */
-  init_array (n, POLYBENCH_ARRAY(MATRIX));
+  init_array (MATRIX);
   
   /* Copying array(s). */
-  copy_array (n, POLYBENCH_ARRAY(MATRIX), POLYBENCH_ARRAY(MATRIX_AUX));
+  copy_array (MATRIX, MATRIX_AUX);
   
 
   /* Start timer. */
@@ -143,7 +149,7 @@ int main(int argc, char** argv)
 
   /* Prevent dead-code elimination. All live-out data must be printed
      by the function call in argument. */
-  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(MATRIX)));
+  polybench_prevent_dce(print_array(size, MATRIX));
 
   /* Be clean. */
   POLYBENCH_FREE_ARRAY(MATRIX);
