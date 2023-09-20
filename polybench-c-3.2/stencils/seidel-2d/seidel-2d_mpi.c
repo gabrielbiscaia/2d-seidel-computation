@@ -116,13 +116,6 @@ int main(int argc, char** argv)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    /* Broadcast size and tsteps to all processes */ //não sei o q faz
-    MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&tsteps, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-    /* Create MPI column type for communication */ //não sei o que faz
-    MPI_Type_vector(size - 2, 1, size, MPI_DOUBLE, &COLUMN);
-    MPI_Type_commit(&COLUMN);
 
     /* Compute the range of rows for each process */ //não sei o que faz
     int rows_per_proc = (size - 2) / num_procs;
@@ -142,15 +135,12 @@ int main(int argc, char** argv)
 
     /* Free memory and finalize MPI */
     liberarMatrizes();
-    MPI_Type_free(&COLUMN);
     MPI_Finalize();
 
     polybench_stop_instruments;
     polybench_print_instruments;
 
     polybench_prevent_dce(print_array(size, MATRIX));
-
-    POLYBENCH_FREE_ARRAY(MATRIX);
 
     return 0;
 }

@@ -15,7 +15,7 @@
 #  endif
 
 #  ifdef STANDARD_DATASET
-#   define TSTEPS 400
+#   define TSTEPS 1200
 #   define N 6000
 #  endif
 
