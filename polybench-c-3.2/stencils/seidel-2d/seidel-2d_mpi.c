@@ -127,9 +127,9 @@ int main(int argc, char** argv)
 
     kernel_seidel_2d_parallel(start_i, end_i);
 
-    /* Stop timer and print time taken */
+    /* Stop timer and print time taken */ //Acho que pode tirar
     double end_time = MPI_Wtime();
-    if (rank == 0) {
+    if, (rank == 0) {
         printf("Time: %f seconds\n", end_time - start_time);
     }
 
