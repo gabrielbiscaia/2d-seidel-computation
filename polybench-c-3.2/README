@@ -5,13 +5,15 @@
 Copyright (c) 2011-2012 the Ohio State University.
 Contact: Louis-Noel Pouchet <pouchet@cse.ohio-state.edu>
 
+
+
 -----------------------
 * Available benchmarks:
 -----------------------
 
-seidel-2d/seidel-2d.c
-seidel-2d/seidel-2d_pthreads.c
-seidel-2d/seidel-2d_mpi.c
+stencils/seidel-2d_sequential.c
+stencils/seidel-2d_pthreads.c
+stencils/seidel-2d_mpi.c
 
 
 ------------------------------
@@ -36,7 +38,6 @@ $> gcc -O3 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c lin
 
 $> gcc -O0 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_DUMP_ARRAYS -o atax_ref
 $> ./atax_ref 2>atax_ref.out
-
 
 
 
