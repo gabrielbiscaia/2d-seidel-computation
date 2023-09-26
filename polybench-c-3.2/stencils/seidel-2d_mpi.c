@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 
     /* Stop timer and print time taken */ //Acho que pode tirar
     double end_time = MPI_Wtime();
-    if, (rank == 0) {
+    if(rank == 0) {
         printf("Time: %f seconds\n", end_time - start_time);
     }
 
