@@ -43,17 +43,16 @@ int main(int argc, char *argv[]) {
             char comando_compile[900];
             char comando_exec[100];         
             
-            if(strcmp(mode, "pthreads") == 0){
-                comando_compile = "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_pthreads.c -o seidel-2d_pthreads -DPOLYBENCH_TIME -D_DATASET";
-                comando_exec="./seidel-2d_pthreads";
+            if (strcmp(mode, "pthreads") == 0) {
+                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_pthreads.c -o seidel-2d_pthreads -DPOLYBENCH_TIME -D_DATASET");
                 sprintf(comando_exec, "./seidel-2d_pthreads -np %d", np);
             }
-            else if(strcmp(mode, "sequencial") == 0){
-                comando_compile = "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_sequential.c -o seidel-2d_sequential -DPOLYBENCH_TIME -D_DATASET";
-                comando_exec="./seidel-2d";
+            else if (strcmp(mode, "sequencial") == 0) {
+                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_sequential.c -o seidel-2d_sequential -DPOLYBENCH_TIME -D_DATASET");
+                strcpy(comando_exec, "./seidel-2d");
             }
-            else if((strcmp(mode, "mpi") == 0)){
-                comando_compile = "mpicc -I utilities -I stencils utilities/polybench.c stencils/seidel-2d_mpi.c -o seidel-2d_mpi -DPOLYBENCH_TIME -D_DATASET";
+            else if (strcmp(mode, "mpi") == 0) {
+                strcpy(comando_compile, "mpicc -I utilities -I stencils utilities/polybench.c stencils/seidel-2d_mpi.c -o seidel-2d_mpi -DPOLYBENCH_TIME -D_DATASET");
                 sprintf(comando_exec, "mpirun -np %d ./sequential-2d_mpi.c", np);
             }
             
