@@ -6,14 +6,13 @@
 #include <pthread.h>
 #include "seidel-2d.h"
 
-#define NUM_THREADS 4
+int NUM_THREADS=0;
 
 int size;
 int tsteps;
 
 pthread_barrier_t barrier;
 
-pthread_t threads[NUM_THREADS];
 
 DATA_TYPE **MATRIX;
 DATA_TYPE **MATRIX_AUX;
@@ -113,6 +112,20 @@ int main(int argc, char** argv)
   /* Retrieve problem size. */
   size = N;
   tsteps = TSTEPS;
+
+  for (int i = 0; i < argc; i++) {
+    if (strcmp(argv[i], "-np") == 0 && i + 1 < argc) {
+        NUM_THREADS = atoi(argv[i + 1]);
+        break;
+    }
+  }
+  if (np != 0) {
+    printf("O valor de -np é %s\n", np);
+  } else {
+    printf("O argumento -np não foi encontrado\n");
+  }
+
+  pthread_t threads[NUM_THREADS];
 
   aloc_matrix();
 
