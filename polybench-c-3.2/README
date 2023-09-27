@@ -140,4 +140,20 @@ the desired configuration, for instance to create a full C99 version
 $> PARGS="-I utilities -DPOLYBENCH_USE_C99_PROTO";
 $> for i in `cat utilities/benchmark_list`; do ./utilities/create_cpped_version.sh "$i" "$PARGS"; done
 
+exatas joia masc:
+  top3 handebol
+  top3 volei
+  top3 futecampo
+  top1 atletismo
+    top 1 = 100m
+    top 1 = 200m
+    top 1 = 400m
+    top 1 = 800m
+    top 1 = 1500m
+
+    top 1 = salto em altura (1.70)
+    top 2 = salto em atlura (1.65)
+
+    
+
 

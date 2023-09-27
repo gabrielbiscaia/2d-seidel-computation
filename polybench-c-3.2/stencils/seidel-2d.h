@@ -3,7 +3,7 @@
 
 /* Default to STANDARD_DATASET. */
 # if !defined(SMALL_DATASET) && !defined(LARGE_DATASET)
-#   define STANDARD_DATASET
+#   define STANDARD2_DATASET
 # endif
 
 /* Do not define anything if the user manually defines the size. */
@@ -15,12 +15,12 @@
 #  endif
 
 #  ifdef STANDARD_DATASET
-#   define TSTEPS 1500
+#   define TSTEPS 1700
 #   define N 6000
 #  endif
 
 #  ifdef LARGE_DATASET /* Default if unspecified. */
-#   define TSTEPS 1800
+#   define TSTEPS 2200
 #   define N 6000
 #  endif
 
