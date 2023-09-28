@@ -1,57 +1,38 @@
 # 2d-seidel-computation
-work of concurrent programming that consists in parallelizing 2d Seidel algorithm
+Work of concurrent programming that consists in parallelizing 2d Seidel algorithm
 
-Alunos:
-Arthur Maciel   120119
-Gabriel Biscaia 118928
-Pedro Zafalon   120117
+Alunos:<br>
+Arthur Maciel   120119<br>
+Gabriel Biscaia 118928<br>
+Pedro Zafalon   120117<br>
 
 * * * * * * * * * *
-* PolyBench/C 3.2 *
-* * * * * * * * * *
+<h1>PolyBench/C 3.2</h1>
 
 Copyright (c) 2011-2012 the Ohio State University.
 Contact: Louis-Noel Pouchet <pouchet@cse.ohio-state.edu>
 
 
+<h3>Available benchmarks:</h3>
 
------------------------
-* Available benchmarks:
------------------------
+* stencils/seidel-2d_sequential.c
+* stencils/seidel-2d_pthreads.c
+* stencils/seidel-2d_mpi.c
 
-stencils/seidel-2d_sequential.c
-stencils/seidel-2d_pthreads.c
-stencils/seidel-2d_mpi.c
+<br>
+<h3>Sample compilation commands:</h3>
 
-
-------------------------------
-* Sample compilation commands:
-------------------------------
-
-
-** To compile a benchmark without any monitoring:
--------------------------------------------------
+* To compile a benchmark without any monitoring:
 
 $> gcc -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -o atax_base
+<br>
 
-
-** To compile a benchmark with execution time reporting:
---------------------------------------------------------
+* To compile a benchmark with execution time reporting:
 
 $> gcc -O3 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_TIME -o atax_time
 
-
-** To generate the reference output of a benchmark:
----------------------------------------------------
-
-$> gcc -O0 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_DUMP_ARRAYS -o atax_ref
-$> ./atax_ref 2>atax_ref.out
-
-
-
--------------------------
-* Some available options:
--------------------------
+<br>
+<h3>Some available options:</h3>
 
 They are all passed as macro definitions during compilation time (e.g,
 -Dname_of_the_option).
@@ -84,20 +65,14 @@ They are all passed as macro definitions during compilation time (e.g,
 
 - POLYBENCH_USE_SCALAR_LB: Use scalar loop bounds instead of parametric ones.
 
+<br>
+<h3>PAPI support:</h3>
 
-
----------------
-* PAPI support:
----------------
-
-** To compile a benchmark with PAPI support:
---------------------------------------------
+* To compile a benchmark with PAPI support:
 
 $> gcc -O3 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_PAPI -lpapi -o atax_papi
 
-
-** To specify which counter(s) to monitor:
-------------------------------------------
+* To specify which counter(s) to monitor:
 
 Edit utilities/papi_counters.list, and add 1 line per event to
 monitor. Each line (including the last one) must finish with a ',' and
@@ -105,47 +80,5 @@ both native and standard events are supported.
 
 The whole kernel is run one time per counter (no multiplexing) and
 there is no sampling being used for the counter value.
-
-
-
-------------------------------
-* Accurate performance timing:
-------------------------------
-
-With kernels that have an execution time in the orders of a few tens
-of milliseconds, it is critical to validate any performance number by
-repeating several times the experiment. A companion script is
-available to perform reasonable performance measurement of a PolyBench.
-
-$> gcc -O3 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_TIME -o atax_time
-$> ./utilities/time_benchmark.sh ./atax_time
-
-This script will run five times the benchmark (that must be a
-PolyBench compiled with -DPOLYBENCH_TIME), eliminate the two extremal
-times, and check that the deviation of the three remaining does not
-exceed a given threshold, set to 5%.
-
-It is also possible to use POLYBENCH_CYCLE_ACCURATE_TIMER to use the
-Time Stamp Counter instead of gettimeofday() to monitor the number of
-elapsed cycles.
-
-
-
-
-----------------------------------------
-* Generating macro-free benchmark suite:
-----------------------------------------
-
-(from the root of the archive:)
-$> PARGS="-I utilities -DPOLYBENCH_TIME";
-$> for i in `cat utilities/benchmark_list`; do create_cpped_version.sh $i "$PARGS"; done
-
-This create for each benchmark file 'xxx.c' a new file
-'xxx.preproc.c'. The PARGS variable in the above example can be set to
-the desired configuration, for instance to create a full C99 version
-(parametric arrays):
-
-$> PARGS="-I utilities -DPOLYBENCH_USE_C99_PROTO";
-$> for i in `cat utilities/benchmark_list`; do ./utilities/create_cpped_version.sh "$i" "$PARGS"; done
 
 
