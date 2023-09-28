@@ -81,26 +81,4 @@ both native and standard events are supported.
 The whole kernel is run one time per counter (no multiplexing) and
 there is no sampling being used for the counter value.
 
-<br>
-<h3>Accurate performance timing:</h3>
-
-With kernels that have an execution time in the orders of a few tens
-of milliseconds, it is critical to validate any performance number by
-repeating several times the experiment. A companion script is
-available to perform reasonable performance measurement of a PolyBench.
-
-$> gcc -O3 -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -DPOLYBENCH_TIME -o atax_time
-$> ./utilities/time_benchmark.sh ./atax_time
-
-This script will run five times the benchmark (that must be a
-PolyBench compiled with -DPOLYBENCH_TIME), eliminate the two extremal
-times, and check that the deviation of the three remaining does not
-exceed a given threshold, set to 5%.
-
-It is also possible to use POLYBENCH_CYCLE_ACCURATE_TIMER to use the
-Time Stamp Counter instead of gettimeofday() to monitor the number of
-elapsed cycles.
-$> PARGS="-I utilities -DPOLYBENCH_USE_C99_PROTO";
-$> for i in `cat utilities/benchmark_list`; do ./utilities/create_cpped_version.sh "$i" "$PARGS"; done
-
 
