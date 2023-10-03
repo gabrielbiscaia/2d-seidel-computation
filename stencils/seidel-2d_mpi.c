@@ -100,7 +100,6 @@ void liberarMatrizes()
 
 int main(int argc, char **argv)
 {
-    /* Retrieve problem size. */
     size = N;
     tsteps = TSTEPS;
 

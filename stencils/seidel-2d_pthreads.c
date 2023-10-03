@@ -23,7 +23,6 @@ static void init_array(DATA_TYPE **A)
       A[i][j] = ((DATA_TYPE)i * (j + 2) + 2) / size;
 }
 
-/* Matrix Copying */
 static void copy_array(DATA_TYPE **A, DATA_TYPE **B)
 {
   int i, j;
@@ -36,7 +35,7 @@ static void copy_array(DATA_TYPE **A, DATA_TYPE **B)
 static void copy_array_line(int start, int end, DATA_TYPE **A, DATA_TYPE **B)
 {
   int i, j;
-  // VERIFICAR
+
   for (i = start; i < end; i++)
     for (j = 0; j < N; j++)
       B[i][j] = A[i][j];
@@ -72,7 +71,7 @@ void *kernel_seidel_2d_parallel(void *arg)
       }
     }
     copy_array_line(start_i, end_i, MATRIX, MATRIX_AUX);
-    // Sync Threads
+    // Sincronização das Threads
     pthread_barrier_wait(&barrier);
   }
 }
@@ -106,7 +105,6 @@ void liberarMatrizes()
 
 int main(int argc, char **argv)
 {
-  /* Retrieve problem size. */
   size = N;
   tsteps = TSTEPS;
 
