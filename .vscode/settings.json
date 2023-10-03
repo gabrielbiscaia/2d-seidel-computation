@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "template-for-new-benchmark.h": "c"
+        "template-for-new-benchmark.h": "c",
+        "stdlib.h": "c"
     }
 }
