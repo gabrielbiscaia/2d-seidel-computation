@@ -119,11 +119,7 @@ int main(int argc, char** argv)
         break;
     }
   }
-  if (NUM_THREADS != 0) {
-    printf("O valor de -np é %s\n", NUM_THREADS);
-  } else {
-    printf("O argumento -np não foi encontrado\n");
-  }
+  
 
   pthread_t threads[NUM_THREADS];
 

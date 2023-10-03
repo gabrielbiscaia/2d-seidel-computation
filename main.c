@@ -41,11 +41,11 @@ int main(int argc, char *argv[]) {
             char comando_exec[100];         
             
             if (strcmp(mode, "pthreads") == 0) {
-                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_pthreads.c -o executables/seidel-2d_pthreads -DPOLYBENCH_TIME -D_DATASET");
+                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d_pthreads.c -o executables/seidel-2d_pthreads -DPOLYBENCH_TIME -D_DATASET");
                 sprintf(comando_exec, "./executables/seidel-2d_pthreads -np %d", np);
             }
             else if (strcmp(mode, "sequencial") == 0) {
-                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d/seidel-2d_sequential.c -o executables/seidel-2d_sequential -DPOLYBENCH_TIME -D_DATASET");
+                strcpy(comando_compile, "gcc -I utilities -I stencils/seidel-2d utilities/polybench.c stencils/seidel-2d_sequential.c -o executables/seidel-2d_sequential -DPOLYBENCH_TIME -D_DATASET");
                 strcpy(comando_exec, "./executables/seidel-2d_sequential");
             }
             else if (strcmp(mode, "mpi") == 0) {

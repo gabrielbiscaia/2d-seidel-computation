@@ -6,8 +6,6 @@
 #include "seidel-2d.h"
 #include <mpi.h>
 
-#define NUM_THREADS 4
-
 int size;
 int tsteps;
 int rank, num_procs;
