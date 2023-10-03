@@ -22,8 +22,21 @@ Contact: Louis-Noel Pouchet <pouchet@cse.ohio-state.edu>
 <br>
 <h3>To compile the code:</h3>
 
-$> gcc -I utilities -I linear-algebra/kernels/atax utilities/polybench.c linear-algebra/kernels/atax/atax.c -o atax_base
-<br>
+To run the application developed in this project, we must first compile the 'main.c' code. To do this, execute the following command in the terminal:
+
+
+gcc main.c -o main
+
+
+After compiling the "main.c" code, you only need to execute `./main` with the necessary arguments. Below, you can see the required arguments:
+
+- Mode: "-m {mpi, pthreads, sequential}"
+- Number of Processors: "-np {4, 8, 16}"
+- Size: "-s {SMALL, STANDARD, LARGE}"
+
+Example of execution:
+
+./main -m mpi -np 4 -s SMALL
 
 <br>
 
