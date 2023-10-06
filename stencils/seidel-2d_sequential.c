@@ -51,9 +51,6 @@ int main(int argc, char **argv)
   polybench_stop_instruments;
   polybench_print_instruments;
 
-  // Previne "dead-code elimination".
-  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(A)));
-
   // Libera a memória destinada a matriz
   POLYBENCH_FREE_ARRAY(A);
 

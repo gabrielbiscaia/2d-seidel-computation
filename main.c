@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
             }
             else if (strcmp(mode, "mpi") == 0) {
                 strcpy(comando_compile, "mpicc -I utilities -I stencils utilities/polybench.c stencils/seidel-2d_mpi.c -o executables/seidel-2d_mpi -DPOLYBENCH_TIME -D_DATASET");
-                sprintf(comando_exec, "mpirun -np %d ./executables/seidel-2d_mpi", np);
+                sprintf(comando_exec, "mpirun --oversubscribe -np %d ./executables/seidel-2d_mpi", np);
             }
             
             // Encontra a posição de "DATASET" na string

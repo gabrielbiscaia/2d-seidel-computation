@@ -8,7 +8,7 @@ EXECUTABLES_DIR = executables
 # Parâmetros do programa
 MODE ?= mpi
 NP ?= 2
-SIZE ?= SMALL
+SIZE ?= STANDARD
 
 .PHONY: all compile run clean
 
