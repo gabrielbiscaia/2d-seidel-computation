@@ -38,5 +38,19 @@ Example of execution:
 
 ./main -m mpi -np 4 -s SMALL
 
+<h3>Makefile</h3>
+
+You also can run the application using a Makefile, first we need to compile the code, to do this, execute the following command in the terminal:
+
+make compile MODE=m NP=n SIZE=s
+
+and then
+
+make run
+
+- m = {mpi, pthreads, sequential}
+- n = {number of process that you computer can support}
+- s = {SMALL, STANDARD, LARGE} 
+
 <br>
 
