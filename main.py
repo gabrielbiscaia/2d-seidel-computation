@@ -5,15 +5,15 @@ time_small_pthreads = [422.825, 286.282, 248.736]
 
 time_small_sequential = 595.434
 
-time_standard_mpi = [572.389,  392.555, 1]
+time_standard_mpi = [572.389,  392.555, 372.640]
 time_standard_pthreads = [580.231, 368.326, 357.986]
 
 time_standard_sequential = 645.608
 
-time_large_mpi = [732.775,518.994,1]
-time_large_pthreads = [785.297, 496.970,1]
+time_large_mpi = [732.775,518.994,469.826]
+time_large_pthreads = [785.297, 496.970, 461.914]
 
-time_large_sequential = 1
+time_large_sequential = 1238.800
 
 
 
